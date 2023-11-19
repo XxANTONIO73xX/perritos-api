@@ -1,16 +1,15 @@
 const perroCtrl = {}
 const Perro = require("../models/perro")
 
-perroCtrl.createPerro = async (req, res) => {
-    const {raza, color, tamanio, foto} = req.body;
+perroCtrl.createPerro = async (raza, color, tamanio, fotoPath) => {
     const newPerro = new Perro({
         raza:raza,
         color:color,
         tamanio:tamanio,
-        foto:foto
+        foto:fotoPath
     });
     await newPerro.save();
-    res.json({message: 'Perro Saved', perro: newPerro})
+    return newPerro;
 }
 
 perroCtrl.getPerro = async (req, res)=>{

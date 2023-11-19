@@ -1,6 +1,7 @@
 const {Router} = require('express');
 const router = Router();
 const {createPerro, getPerro, getPerros, deletePerro, updatePerro} = require("../controllers/perro.controller")
+const upload = require('../src/upload')
 /**
  * @swagger
  * tags:
@@ -143,7 +144,21 @@ const {createPerro, getPerro, getPerros, deletePerro, updatePerro} = require("..
  */
 router.route('/')
     .get(getPerros)
-    .post(createPerro)
+    .post(upload.single('foto'), async (req, res)=>{
+        try{
+            const { raza, color, tamanio } = req.body;
+            if (!req.file) {
+                return res.status(400).json({ message: 'No se ha proporcionado una imagen.' });
+              }
+              const fotoPath = req.file.path;
+              const newPerro = await createPerro(raza, color, tamanio, fotoPath);
+              newPerro.foto = `${req.protocol}://${req.get('host')}/${newPerro.foto}`;
+              res.json({ message: 'Perro Saved', perro: newPerro });
+        }catch(error){
+            console.error(error);
+            res.status(500).json({ message: 'Error interno del servidor' });
+        }
+    })
 router.route('/:id')
     .get(getPerro)
     .put(updatePerro)

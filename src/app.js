@@ -7,6 +7,7 @@ app.set('port', process.env.PORT || 4000);
 app.use(cors());
 app.use(express.json());
 // routes
+app.use('/uploads', express.static('uploads'));
 app.use('/api/perros', require("../routes/perro"));
 app.use('/api/avistamientos', require("../routes/reporteAvistamiento"));
 app.use('/api/estados', require("../routes/estado"));
